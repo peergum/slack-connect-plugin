@@ -1,4 +1,4 @@
-package jenkins.plugins.slack;
+package jenkins.plugins.slackConnect;
 
 import hudson.Extension;
 import hudson.model.AbstractBuild;

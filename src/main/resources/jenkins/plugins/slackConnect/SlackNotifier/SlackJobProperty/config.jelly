@@ -30,8 +30,9 @@
         </f:entry>
 
         <f:advanced>
-            <f:entry title="Notify Repeated Failure">
-                <f:checkbox name="slackNotifyRepeatedFailure" value="true" checked="${instance.getNotifyRepeatedFailure()}"/>
+            <f:entry title="Do Not Notify Repeated Failure">
+                <f:checkbox name="slackNoRepeatedFailureNotification" value="false"
+                            checked="${instance.getNoRepeatedFailureNotification()}"/>
             </f:entry>
             <f:entry title="Include Test Summary">
                 <f:checkbox name="includeTestSummary" value="true" checked="${instance.includeTestSummary()}"/>
@@ -41,21 +42,21 @@
                 <f:checkbox name="slackShowCommitList" value="true" checked="${instance.getShowCommitList()}"/>
             </f:entry>
 
-            <f:entry title="Team Domain" help="${rootURL}/plugin/slack/help-projectConfig-slackTeamDomain.html">
+            <f:entry title="Team Domain" help="/plugin/slack-connect/help-projectConfig-slackTeamDomain.html">
                 <f:textbox name="slackTeamDomain" value="${instance.getTeamDomain()}" />
             </f:entry>
 
-            <f:entry title="Integration Token" help="${rootURL}/plugin/slack/help-projectConfig-slackToken.html">
+            <f:entry title="Integration Token" help="/plugin/slack-connect/help-projectConfig-slackToken.html">
                 <f:textbox name="slackToken" value="${instance.getToken()}" />
             </f:entry>
 
-            <f:entry title="Project Channel" help="${rootURL}/plugin/slack/help-projectConfig-slackRoom.html">
+            <f:entry title="Project Channel" help="/plugin/slack-connect/help-projectConfig-slackRoom.html">
                 <f:textbox name="slackProjectRoom" value="${instance.getRoom()}"/>
             </f:entry>
+            <f:validateButton
+                title="${%Test Connection}" progress="${%Testing...}"
+                method="testConnection" with="slackTeamDomain,slackToken,slackProjectRoom" />
         </f:advanced>
-        <f:validateButton
-            title="${%Test Connection}" progress="${%Testing...}"
-            method="testConnection" with="slackTeamDomain,slackToken,slackProjectRoom" />
     </f:section>
 
 </j:jelly>

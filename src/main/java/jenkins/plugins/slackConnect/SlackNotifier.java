@@ -1,4 +1,4 @@
-package jenkins.plugins.slack;
+package jenkins.plugins.slackConnect;
 
 import hudson.Extension;
 import hudson.Launcher;
@@ -186,7 +186,7 @@ public class SlackNotifier extends Notifier {
                 @QueryParameter("slackBuildServerUrl") final String buildServerUrl) throws FormException {
             try {
                 SlackService testSlackService = new StandardSlackService(teamDomain, authToken, room);
-                String message = "Slack/Jenkins plugin: you're all set on " + buildServerUrl;
+                String message = "Slack Connect plugin: you're all set on " + buildServerUrl;
                 testSlackService.publish(message, "green");
                 return FormValidation.ok("Success");
             } catch (Exception e) {
@@ -207,7 +207,7 @@ public class SlackNotifier extends Notifier {
         private boolean notifyUnstable;
         private boolean notifyFailure;
         private boolean notifyBackToNormal;
-        private boolean notifyRepeatedFailure;
+        private boolean noRepeatedFailureNotification;
         private boolean includeTestSummary;
         private boolean showCommitList;
 
@@ -222,7 +222,7 @@ public class SlackNotifier extends Notifier {
                 boolean notifySuccess,
                 boolean notifyUnstable,
                 boolean notifyBackToNormal,
-                boolean notifyRepeatedFailure,
+                boolean noRepeatedFailureNotification,
                 boolean includeTestSummary,
                 boolean showCommitList) {
             this.teamDomain = teamDomain;
@@ -235,7 +235,7 @@ public class SlackNotifier extends Notifier {
             this.notifySuccess = notifySuccess;
             this.notifyUnstable = notifyUnstable;
             this.notifyBackToNormal = notifyBackToNormal;
-            this.notifyRepeatedFailure = notifyRepeatedFailure;
+            this.noRepeatedFailureNotification = noRepeatedFailureNotification;
             this.includeTestSummary = includeTestSummary;
             this.showCommitList = showCommitList;
         }
@@ -316,15 +316,15 @@ public class SlackNotifier extends Notifier {
         }
 
         @Exported
-        public boolean getNotifyRepeatedFailure() {
-            return notifyRepeatedFailure;
+        public boolean getNoRepeatedFailureNotification() {
+            return noRepeatedFailureNotification;
         }
 
         @Extension
         public static final class DescriptorImpl extends JobPropertyDescriptor {
 
             public String getDisplayName() {
-                return "Slack Notifications";
+                return "Slack Connect";
             }
 
             @Override
@@ -345,7 +345,7 @@ public class SlackNotifier extends Notifier {
                         sr.getParameter("slackNotifySuccess") != null,
                         sr.getParameter("slackNotifyUnstable") != null,
                         sr.getParameter("slackNotifyBackToNormal") != null,
-                        sr.getParameter("slackNotifyRepeatedFailure") != null,
+                        sr.getParameter("slackNoRepeatedFailureNotification") != null,
                         sr.getParameter("includeTestSummary") != null,
                         sr.getParameter("slackShowCommitList") != null);
             }
@@ -365,7 +365,7 @@ public class SlackNotifier extends Notifier {
                         : Util.fixEmpty(project.getProperty(SlackNotifier.SlackJobProperty.class).getToken());
                 try {
                     SlackService testSlackService = new StandardSlackService(team, token, room);
-                    String message = "Slack/Jenkins plugin: you're all set for Project ";
+                    String message = "Slack Connect plugin: you're all set for Project ";
                     testSlackService.publish(message + project.getFullDisplayName(), "green");
                     return FormValidation.ok("Success");
                 } catch (Exception e) {

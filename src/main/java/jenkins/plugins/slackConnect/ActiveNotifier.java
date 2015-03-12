@@ -1,4 +1,4 @@
-package jenkins.plugins.slack;
+package jenkins.plugins.slackConnect;
 
 import hudson.Util;
 import hudson.model.Result;
@@ -84,7 +84,7 @@ public class ActiveNotifier implements FineGrainedNotifier {
         Result previousResult = (previousBuild != null) ? previousBuild.getResult() : Result.SUCCESS;
         if ((result == Result.ABORTED && jobProperty.getNotifyAborted())
                 || (result == Result.FAILURE
-                && (previousResult != Result.FAILURE || jobProperty.getNotifyRepeatedFailure())
+                && (previousResult != Result.FAILURE || !jobProperty.getNoRepeatedFailureNotification())
                 && jobProperty.getNotifyFailure())
                 || (result == Result.NOT_BUILT && jobProperty.getNotifyNotBuilt())
                 || (result == Result.SUCCESS
