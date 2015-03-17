@@ -4,14 +4,14 @@ import org.jvnet.hudson.test.JenkinsRule;
 import org.junit.Before;
 import org.junit.Test;
 
-public class StandardSlackServiceTest {
+public class StandardSlackPublisherTest {
 
     /**
      * Publish should generally not re-throw exceptions, or it will cause a build job to fail at end.
      */
     @Test
     public void publishWithBadHostShouldNotRethrowExceptions() {
-        StandardSlackService service = new StandardSlackService("foo", "token", "#general");
+        StandardSlackPublisher service = new StandardSlackPublisher("foo", "token", "#general");
         service.setHost("hostvaluethatwillcausepublishtofail");
         service.publish("message");
     }
@@ -21,7 +21,7 @@ public class StandardSlackServiceTest {
      */
     @Test
     public void invalidTeamDomainShouldFail() {
-        StandardSlackService service = new StandardSlackService("my", "token", "#general");
+        StandardSlackPublisher service = new StandardSlackPublisher("my", "token", "#general");
         service.publish("message");
     }
 
@@ -30,7 +30,7 @@ public class StandardSlackServiceTest {
      */
     @Test
     public void invalidTokenShouldFail() {
-        StandardSlackService service = new StandardSlackService("tinyspeck", "token", "#general");
+        StandardSlackPublisher service = new StandardSlackPublisher("tinyspeck", "token", "#general");
         service.publish("message");
     }
 }

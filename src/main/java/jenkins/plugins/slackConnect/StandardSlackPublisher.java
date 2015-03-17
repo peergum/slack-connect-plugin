@@ -15,16 +15,16 @@ import hudson.ProxyConfiguration;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 
-public class StandardSlackService implements SlackService {
+public class StandardSlackPublisher implements SlackPublisher {
 
-    private static final Logger logger = Logger.getLogger(StandardSlackService.class.getName());
+    private static final Logger logger = Logger.getLogger(StandardSlackPublisher.class.getName());
 
     private String host = "slack.com";
     private String teamDomain;
     private String token;
     private String[] roomIds;
 
-    public StandardSlackService(String teamDomain, String token, String roomId) {
+    public StandardSlackPublisher(String teamDomain, String token, String roomId) {
         super();
         this.teamDomain = teamDomain;
         this.token = token;

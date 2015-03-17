@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 @SuppressWarnings("rawtypes")
 public class ActiveNotifier implements FineGrainedNotifier {
 
-    private static final Logger logger = Logger.getLogger(SlackListener.class.getName());
+    private static final Logger logger = Logger.getLogger(SlackRunListener.class.getName());
 
     SlackNotifier notifier;
 
@@ -30,12 +30,12 @@ public class ActiveNotifier implements FineGrainedNotifier {
         this.notifier = notifier;
     }
 
-    private SlackService getSlack(AbstractBuild r) {
+    private SlackPublisher getSlack(AbstractBuild r) {
         AbstractProject<?, ?> project = r.getProject();
         String projectRoom = Util.fixEmpty(project.getProperty(SlackNotifier.SlackJobProperty.class).getRoom());
         String teamDomain = Util.fixEmpty(project.getProperty(SlackNotifier.SlackJobProperty.class).getTeamDomain());
         String token = Util.fixEmpty(project.getProperty(SlackNotifier.SlackJobProperty.class).getToken());
-        return notifier.newSlackService(teamDomain, token, projectRoom);
+        return notifier.newSlackPublisher(teamDomain, token, projectRoom);
     }
 
     public void deleted(AbstractBuild r) {

@@ -13,11 +13,11 @@ import java.util.logging.Logger;
 
 @Extension
 @SuppressWarnings("rawtypes")
-public class SlackListener extends RunListener<AbstractBuild> {
+public class SlackRunListener extends RunListener<AbstractBuild> {
 
-    private static final Logger logger = Logger.getLogger(SlackListener.class.getName());
+    private static final Logger logger = Logger.getLogger(SlackRunListener.class.getName());
 
-    public SlackListener() {
+    public SlackRunListener() {
         super(AbstractBuild.class);
     }
 
@@ -54,7 +54,7 @@ public class SlackListener extends RunListener<AbstractBuild> {
                 return new ActiveNotifier((SlackNotifier) publisher);
             }
         }
-        return new DisabledNotifier();
+        return new InactiveNotifier();
     }
 
 }

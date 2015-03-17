@@ -3,7 +3,7 @@ package jenkins.plugins.slackConnect;
 import hudson.model.AbstractBuild;
 
 @SuppressWarnings("rawtypes")
-public class DisabledNotifier implements FineGrainedNotifier {
+public class InactiveNotifier implements FineGrainedNotifier {
     public void started(AbstractBuild r) {
     }
 

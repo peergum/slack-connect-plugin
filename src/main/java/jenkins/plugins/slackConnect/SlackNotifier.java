@@ -76,7 +76,7 @@ public class SlackNotifier extends Notifier {
         return BuildStepMonitor.BUILD;
     }
 
-    public SlackService newSlackService(String teamDomain, String token, String projectRoom) {
+    public SlackPublisher newSlackPublisher(String teamDomain, String token, String projectRoom) {
         // Settings are passed here from the job, if they are null, use global settings
         if (teamDomain == null) {
             teamDomain = getTeamDomain();
@@ -88,7 +88,7 @@ public class SlackNotifier extends Notifier {
             projectRoom = getRoom();
         }
 
-        return new StandardSlackService(teamDomain, token, projectRoom);
+        return new StandardSlackPublisher(teamDomain, token, projectRoom);
     }
 
     @Override
@@ -185,7 +185,7 @@ public class SlackNotifier extends Notifier {
                 @QueryParameter("slackRoom") final String room,
                 @QueryParameter("slackBuildServerUrl") final String buildServerUrl) throws FormException {
             try {
-                SlackService testSlackService = new StandardSlackService(teamDomain, authToken, room);
+                SlackPublisher testSlackService = new StandardSlackPublisher(teamDomain, authToken, room);
                 String message = "Slack Connect plugin: you're all set on " + buildServerUrl;
                 testSlackService.publish(message, "green");
                 return FormValidation.ok("Success");
@@ -364,7 +364,7 @@ public class SlackNotifier extends Notifier {
                         ? authToken
                         : Util.fixEmpty(project.getProperty(SlackNotifier.SlackJobProperty.class).getToken());
                 try {
-                    SlackService testSlackService = new StandardSlackService(team, token, room);
+                    SlackPublisher testSlackService = new StandardSlackPublisher(team, token, room);
                     String message = "Slack Connect plugin: you're all set for Project ";
                     testSlackService.publish(message + project.getFullDisplayName(), "green");
                     return FormValidation.ok("Success");
