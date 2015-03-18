@@ -184,14 +184,9 @@ public class SlackNotifier extends Notifier {
                 @QueryParameter("slackToken") final String authToken,
                 @QueryParameter("slackRoom") final String room,
                 @QueryParameter("slackBuildServerUrl") final String buildServerUrl) throws FormException {
-            try {
-                SlackPublisher testSlackService = new StandardSlackPublisher(teamDomain, authToken, room);
-                String message = "Slack Connect plugin: you're all set on " + buildServerUrl;
-                testSlackService.publish(message, "green");
-                return FormValidation.ok("Success");
-            } catch (Exception e) {
-                return FormValidation.error("Client error : " + e.getMessage());
-            }
+            SlackPublisher testSlackService = new StandardSlackPublisher(teamDomain, authToken, room);
+            String message = "Slack Connect plugin: you're all set on " + buildServerUrl;
+            return FormValidation.ok(testSlackService.publish(message, "green"));
         }
     }
 
@@ -353,24 +348,20 @@ public class SlackNotifier extends Notifier {
             public FormValidation doTestConnection(@QueryParameter("slackTeamDomain") final String teamDomain,
                     @QueryParameter("slackToken") final String authToken,
                     @QueryParameter("slackProjectRoom") final String projectRoom,
-                    @AncestorInPath AbstractProject<?,?> project) throws FormException {
+                    @AncestorInPath AbstractProject<?, ?> project) throws FormException {
                 String team = !teamDomain.equals("")
                         ? teamDomain
-                        : Util.fixEmpty(project.getProperty(SlackNotifier.SlackJobProperty.class).getTeamDomain());
+                        : project.getProperty(SlackNotifier.SlackJobProperty.class).getTeamDomain();
                 String room = !projectRoom.equals("")
                         ? projectRoom
-                        : Util.fixEmpty(project.getProperty(SlackNotifier.SlackJobProperty.class).getRoom());
+                        : project.getProperty(SlackNotifier.SlackJobProperty.class).getRoom();
                 String token = !authToken.equals("")
                         ? authToken
-                        : Util.fixEmpty(project.getProperty(SlackNotifier.SlackJobProperty.class).getToken());
-                try {
-                    SlackPublisher testSlackService = new StandardSlackPublisher(team, token, room);
-                    String message = "Slack Connect plugin: you're all set for Project ";
-                    testSlackService.publish(message + project.getFullDisplayName(), "green");
-                    return FormValidation.ok("Success");
-                } catch (Exception e) {
-                    return FormValidation.error("Client error : " + e.getMessage());
-                }
+                        : project.getProperty(SlackNotifier.SlackJobProperty.class).getToken();
+
+                SlackPublisher testSlackService = new StandardSlackPublisher(team, token, room);
+                String message = "Slack Connect plugin: you're all set for Project ";
+                return FormValidation.ok(testSlackService.publish(message + project.getFullDisplayName(), "green"));
             }
         }
     }

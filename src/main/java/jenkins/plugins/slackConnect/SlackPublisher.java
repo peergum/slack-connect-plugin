@@ -1,7 +1,7 @@
 package jenkins.plugins.slackConnect;
 
 public interface SlackPublisher {
-    void publish(String message);
+    String publish(String message);
 
-    void publish(String message, String color);
+    String publish(String message, String color);
 }

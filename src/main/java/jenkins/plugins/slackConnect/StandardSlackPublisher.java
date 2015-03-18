@@ -31,14 +31,15 @@ public class StandardSlackPublisher implements SlackPublisher {
         this.roomIds = roomId.split("[,; ]+");
     }
 
-    public void publish(String message) {
-        publish(message, "warning");
+    public String publish(String message) {
+        return publish(message, "warning");
     }
 
-    public void publish(String message, String color) {
+    public String publish(String message, String color) {
+        String response = "No room to notify.";
         for (String roomId : roomIds) {
             String url = "https://" + teamDomain + "." + host + "/services/hooks/jenkins-ci?token=" + token;
-            logger.info("Posting: to " + roomId + " on " + teamDomain + " using " + url +": " + message + " " + color);
+            logger.info("Posting: to " + roomId + " on " + teamDomain + " using " + url + ": " + message + " " + color);
             HttpClient client = getHttpClient();
             PostMethod post = new PostMethod(url);
             JSONObject json = new JSONObject();
@@ -64,17 +65,19 @@ public class StandardSlackPublisher implements SlackPublisher {
                 post.addParameter("payload", json.toString());
                 post.getParams().setContentCharset("UTF-8");
                 int responseCode = client.executeMethod(post);
-                String response = post.getResponseBodyAsString();
-                if(responseCode != HttpStatus.SC_OK) {
+                response = post.getResponseBodyAsString();
+                if (responseCode != HttpStatus.SC_OK) {
                     logger.log(Level.WARNING, "Slack post may have failed. Response: " + response);
                 }
             } catch (Exception e) {
                 logger.log(Level.WARNING, "Error posting to Slack", e);
+                response = e.getLocalizedMessage();
             } finally {
                 logger.info("Posting succeeded");
                 post.releaseConnection();
             }
         }
+        return response;
     }
 
     private HttpClient getHttpClient() {
@@ -92,7 +95,7 @@ public class StandardSlackPublisher implements SlackPublisher {
                     // and
                     // http://svn.apache.org/viewvc/httpcomponents/oac.hc3x/trunk/src/examples/BasicAuthenticationExample.java?view=markup
                     client.getState().setProxyCredentials(AuthScope.ANY,
-                        new UsernamePasswordCredentials(username, password));
+                            new UsernamePasswordCredentials(username, password));
                 }
             }
         }
