@@ -71,7 +71,7 @@ public class StandardSlackPublisher implements SlackPublisher {
                 }
             } catch (Exception e) {
                 logger.log(Level.WARNING, "Error posting to Slack", e);
-                response = e.getLocalizedMessage();
+                response = "Error posting to Slack [" + e.toString() + "]";
             } finally {
                 logger.info("Posting succeeded");
                 post.releaseConnection();

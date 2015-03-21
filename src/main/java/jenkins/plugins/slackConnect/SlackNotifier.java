@@ -2,7 +2,7 @@ package jenkins.plugins.slackConnect;
 
 import hudson.Extension;
 import hudson.Launcher;
-import hudson.Util;
+
 import hudson.model.BuildListener;
 import hudson.model.JobPropertyDescriptor;
 import hudson.model.AbstractBuild;
@@ -345,19 +345,21 @@ public class SlackNotifier extends Notifier {
                         sr.getParameter("slackShowCommitList") != null);
             }
 
-            public FormValidation doTestConnection(@QueryParameter("slackTeamDomain") final String teamDomain,
+            public FormValidation doTestConnection(
+                    @QueryParameter("slackTeamDomain") final String teamDomain,
                     @QueryParameter("slackToken") final String authToken,
                     @QueryParameter("slackProjectRoom") final String projectRoom,
                     @AncestorInPath AbstractProject<?, ?> project) throws FormException {
+                SlackNotifier notifier = project.getPublishersList().get(SlackNotifier.class);
                 String team = !teamDomain.equals("")
                         ? teamDomain
-                        : project.getProperty(SlackNotifier.SlackJobProperty.class).getTeamDomain();
+                        : notifier.teamDomain;
                 String room = !projectRoom.equals("")
                         ? projectRoom
-                        : project.getProperty(SlackNotifier.SlackJobProperty.class).getRoom();
+                        : notifier.room;
                 String token = !authToken.equals("")
                         ? authToken
-                        : project.getProperty(SlackNotifier.SlackJobProperty.class).getToken();
+                        : notifier.authToken;
 
                 SlackPublisher testSlackService = new StandardSlackPublisher(team, token, room);
                 String message = "Slack Connect plugin: you're all set for Project ";
