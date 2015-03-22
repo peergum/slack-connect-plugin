@@ -19,7 +19,7 @@
 
     <artifactId>slack-connect</artifactId>
     <packaging>hpi</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <name>Slack Connect Plugin</name>
     <description>A Connector between Jenkins and your Slack team</description>
     <url>http://wiki.jenkins-ci.org/display/JENKINS/Slack+Connect</url>
