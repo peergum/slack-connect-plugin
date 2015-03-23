@@ -26,9 +26,41 @@ public class StandardSlackPublisher implements SlackPublisher {
 
     public StandardSlackPublisher(String teamDomain, String token, String roomId) {
         super();
+        setTeamDomain(teamDomain);
+        setToken(token);
+        setRoomIds(roomId.split(",; "));
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public String getTeamDomain() {
+        return teamDomain;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public String[] getRoomIds() {
+        return roomIds;
+    }
+
+    public void setTeamDomain(String teamDomain) {
         this.teamDomain = teamDomain;
+    }
+
+    public void setToken(String token) {
         this.token = token;
-        this.roomIds = roomId.split("[,; ]+");
+    }
+
+    public void setRoomIds(String[] roomIds) {
+        this.roomIds = roomIds;
     }
 
     public String publish(String message) {
@@ -36,13 +68,14 @@ public class StandardSlackPublisher implements SlackPublisher {
     }
 
     public String publish(String message, String color) {
+        String url = getUrl();
+
         String response = "No room to notify.";
-        for (String roomId : roomIds) {
-            String url = "https://" + teamDomain + "." + host + "/services/hooks/jenkins-ci?token=" + token;
-            logger.info("Posting: to " + roomId + " on " + teamDomain + " using " + url + ": " + message + " " + color);
-            HttpClient client = getHttpClient();
+        for (String roomId : getRoomIds()) {
+            logger.info("Posting: to " + roomId + " on " + getTeamDomain() + " using " + url + ": " + message + " " + color);
+
             PostMethod post = new PostMethod(url);
-            JSONObject json = new JSONObject();
+            HttpClient client = getHttpClient();
 
             try {
                 JSONObject field = new JSONObject();
@@ -59,11 +92,13 @@ public class StandardSlackPublisher implements SlackPublisher {
                 JSONArray attachments = new JSONArray();
                 attachments.put(attachment);
 
+                JSONObject json = new JSONObject();
                 json.put("channel", roomId);
                 json.put("attachments", attachments);
 
                 post.addParameter("payload", json.toString());
                 post.getParams().setContentCharset("UTF-8");
+
                 int responseCode = client.executeMethod(post);
                 response = post.getResponseBodyAsString();
                 if (responseCode != HttpStatus.SC_OK) {
@@ -80,7 +115,7 @@ public class StandardSlackPublisher implements SlackPublisher {
         return response;
     }
 
-    private HttpClient getHttpClient() {
+    protected HttpClient getHttpClient() {
         HttpClient client = new HttpClient();
         if (Jenkins.getInstance() != null) {
             ProxyConfiguration proxy = Jenkins.getInstance().proxy;
@@ -102,7 +137,7 @@ public class StandardSlackPublisher implements SlackPublisher {
         return client;
     }
 
-    void setHost(String host) {
-        this.host = host;
+    protected String getUrl() {
+        return "https://" + getTeamDomain() + "." + getHost() + "/services/hooks/jenkins-ci?token=" + getToken();
     }
 }
