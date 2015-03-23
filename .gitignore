@@ -5,5 +5,5 @@ target
 .settings
 bin
 work
-slack.iml
+*.iml
 nb-configuration.xml
